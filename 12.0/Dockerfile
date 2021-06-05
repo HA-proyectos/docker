@@ -75,6 +75,21 @@ RUN curl -o odoo.deb -sSL http://nightly.odoo.com/${ODOO_VERSION}/nightly/deb/od
         && apt-get -y install --no-install-recommends ./odoo.deb \
         && rm -rf /var/lib/apt/lists/* odoo.deb
 
+# Dependencias SaiCloud
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends \
+    python-dev \
+    python3-dev \
+    build-essential \
+    libssl-dev \
+    libffi-dev \
+    libxml2-dev \
+    libxslt1-dev \
+    zlib1g-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN pip3 install wheel barcode
+
 # Copy entrypoint script and Odoo configuration file
 COPY ./entrypoint.sh /
 COPY ./odoo.conf /etc/odoo/
