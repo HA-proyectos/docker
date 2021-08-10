@@ -3,9 +3,9 @@ MAINTAINER Odoo S.A. <info@odoo.com>
 
 SHELL ["/bin/bash", "-xo", "pipefail", "-c"]
 
+ARG SSH_KEY
 # Generate locale C.UTF-8 for postgres and general locale data
-ENV LANG C.UTF-8
-
+ENV LANG C.UTF-8 SSH_KEY=$SSH_KEY
 # Use backports to avoid install some libs with pip
 RUN echo 'deb http://deb.debian.org/debian stretch-backports main' > /etc/apt/sources.list.d/backports.list
 
@@ -32,10 +32,18 @@ RUN apt-get update \
             python3-xlrd \
             python3-xlwt \
             xz-utils \
+            ssh \
+            git \
         && curl -o wkhtmltox.deb -sSL https://github.com/wkhtmltopdf/wkhtmltopdf/releases/download/0.12.5/wkhtmltox_0.12.5-1.stretch_amd64.deb \
         && echo '7e35a63f9db14f93ec7feeb0fce76b30c08f2057 wkhtmltox.deb' | sha1sum -c - \
         && apt-get install -y --no-install-recommends ./wkhtmltox.deb \
-        && rm -rf /var/lib/apt/lists/* wkhtmltox.deb
+        && rm -rf /var/lib/apt/lists/* wkhtmltox.deb \
+        && mkdir /root/.ssh/ \
+        && echo "$SSH_KEY" > /root/.ssh/id_rsa \
+        && chmod 600 /root/.ssh/id_rsa \
+        && touch /root/.ssh/known_hosts \
+        && ssh-keyscan github.com >> /root/.ssh/known_hosts
+
 
 # install latest postgresql-client
 RUN echo 'deb http://apt.postgresql.org/pub/repos/apt/ stretch-pgdg main' > /etc/apt/sources.list.d/pgdg.list \
@@ -97,6 +105,8 @@ COPY ./odoo.conf /etc/odoo/
 # Mount /var/lib/odoo to allow restoring filestore and /mnt/extra-addons for users addons
 RUN chown odoo /etc/odoo/odoo.conf \
     && mkdir -p /mnt/extra-addons \
+    && git clone git@github.com:HA-proyectos/saicloud.git /mnt/extra-addons/saicloud \
+    && git clone --recurse-submodules git@github.com:HA-proyectos/varios-saicloud.git /mnt/extra-addons/varios-saicloud \
     && chown -R odoo /mnt/extra-addons
 VOLUME ["/var/lib/odoo", "/mnt/extra-addons"]
 
