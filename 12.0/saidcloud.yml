@@ -1,14 +1,17 @@
 version: '3'
 services:
  odoo:
-  image: SaiCloud:12.0
+  image: saicloud:12.0
   links:
    - 'db:db'
   ports:
-   - "8069:8069"
+   - "80:8069"
+  # command: -- -c /etc/odoo/odoo.conf -d saicloud
+  #command: -- -c /etc/odoo/odoo.conf -u account_account_reports -d saicloud
   volumes:
-   - "saiconfig.conf:/etc/odoo/odoo.conf"
-   - "addons-saicloud/:/mnt/extra-addons/addons-saicloud/"
+   - "/home/appdevelop/docker/12.0/odoo.conf:/etc/odoo/odoo.conf"
+   - "/home/appdevelop/saicloud:/mnt/extra-addons/saicloud"
+   - "/home/appdevelop/varios-saicloud:/mnt/extra-addons/varios-saicloud"
    - data-sai:/var/lib/odoo
  db:
   image: postgres:10.0
