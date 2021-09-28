@@ -31,6 +31,7 @@ RUN apt-get update \
             python3-watchdog \
             python3-xlrd \
             python3-xlwt \
+            python3-dev \
             xz-utils \
             ssh \
             git \
@@ -75,8 +76,8 @@ RUN echo "deb http://deb.nodesource.com/node_8.x stretch main" > /etc/apt/source
 
 # Install Odoo
 ENV ODOO_VERSION 12.0
-ARG ODOO_RELEASE=20210525
-ARG ODOO_SHA=c08514dbe2c590a2d9f6029a3fe8abb58306e3a6
+ARG ODOO_RELEASE=20210928
+ARG ODOO_SHA=767fac8fa93169e2d1fa389949d722117ffb9096
 RUN curl -o odoo.deb -sSL http://nightly.odoo.com/${ODOO_VERSION}/nightly/deb/odoo_${ODOO_VERSION}.${ODOO_RELEASE}_all.deb \
         && echo "${ODOO_SHA} odoo.deb" | sha1sum -c - \
         && apt-get update \
@@ -85,7 +86,7 @@ RUN curl -o odoo.deb -sSL http://nightly.odoo.com/${ODOO_VERSION}/nightly/deb/od
 
 # Dependencias SaiCloud
 RUN apt-get update \
-    && apt-get install -y --no-install-recommends \
+    && apt-get install -y \
     python-dev \
     python3-dev \
     build-essential \
@@ -96,7 +97,10 @@ RUN apt-get update \
     zlib1g-dev \
     && rm -rf /var/lib/apt/lists/*
 
-RUN pip3 install wheel barcode
+RUN pip3 install python-Levenshtein-wheels wheel barcode
+
+RUN pip3 install Werkzeug==0.14.1 \
+    && pip3 freeze
 
 # Copy entrypoint script and Odoo configuration file
 COPY ./entrypoint.sh /
