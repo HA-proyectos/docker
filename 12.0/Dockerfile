@@ -100,8 +100,10 @@ COPY ./odoo.conf /etc/odoo/
 # Mount /var/lib/odoo to allow restoring filestore and /mnt/extra-addons for users addons
 RUN chown odoo /etc/odoo/odoo.conf \
     && mkdir -p /mnt/extra-addons \
-    && git clone -b 12.0-dev https://maquinagithubsai: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@github.com/HA-proyectos/saicloud.git /mnt/extra-addons/saicloud \
-    && git clone -b 12.0-dev --recurse-submodules https://maquinagithubsai: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@github.com/HA-proyectos/varios-saicloud.git /mnt/extra-addons/varios-saicloud \
+    && git clone -b 12.0-dev https://maquinagithubsai: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@github.com/HA-proyectos/saicloud.git /mnt/extra-addons/saicloud \
+    && git clone -b 12.0-dev --recurse-submodules https://maquinagithubsai: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@github.com/HA-proyectos/varios-saicloud.git /mnt/extra-addons/varios-saicloud \
+    && rmdir /mnt/extra-addons/saicloud/l10n_co_res_partner \
+    && git clone https://maquinagithubsai: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@github.com/HA-proyectos/l10n_co_res_partner.git /mnt/extra-addons/saicloud/l10n_co_res_partner \
     && chown -R odoo /mnt/extra-addons
 VOLUME ["/var/lib/odoo", "/mnt/extra-addons"]
 

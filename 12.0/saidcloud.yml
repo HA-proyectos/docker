@@ -7,10 +7,10 @@ services:
   ports:
    - "80:8069"
   # command: -- -c /etc/odoo/odoo.conf -d saicloud
-  #command: -- -c /etc/odoo/odoo.conf -u account_account_reports -d saicloud
+  # command: -- -c /etc/odoo/odoo.conf -u all -d saicloud
   volumes:
    - "./odoo.conf:/etc/odoo/odoo.conf"
-   - data-sai:/var/lib/odoo
+  # - data-sai:/var/lib/odoo
  db:
   image: postgres:10.0
   environment:
