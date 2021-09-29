@@ -9,9 +9,7 @@ services:
   # command: -- -c /etc/odoo/odoo.conf -d saicloud
   #command: -- -c /etc/odoo/odoo.conf -u account_account_reports -d saicloud
   volumes:
-   - "/home/appdevelop/docker/12.0/odoo.conf:/etc/odoo/odoo.conf"
-   - "/home/appdevelop/saicloud:/mnt/extra-addons/saicloud"
-   - "/home/appdevelop/varios-saicloud:/mnt/extra-addons/varios-saicloud"
+   - "./odoo.conf:/etc/odoo/odoo.conf"
    - data-sai:/var/lib/odoo
  db:
   image: postgres:10.0

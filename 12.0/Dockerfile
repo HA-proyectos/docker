@@ -38,13 +38,7 @@ RUN apt-get update \
         && curl -o wkhtmltox.deb -sSL https://github.com/wkhtmltopdf/wkhtmltopdf/releases/download/0.12.5/wkhtmltox_0.12.5-1.stretch_amd64.deb \
         && echo '7e35a63f9db14f93ec7feeb0fce76b30c08f2057 wkhtmltox.deb' | sha1sum -c - \
         && apt-get install -y --no-install-recommends ./wkhtmltox.deb \
-        && rm -rf /var/lib/apt/lists/* wkhtmltox.deb \
-        && mkdir /root/.ssh/ \
-        && echo "$SSH_KEY" > /root/.ssh/id_rsa \
-        && chmod 600 /root/.ssh/id_rsa \
-        && touch /root/.ssh/known_hosts \
-        && ssh-keyscan github.com >> /root/.ssh/known_hosts
-
+        && rm -rf /var/lib/apt/lists/* wkhtmltox.deb 
 
 # install latest postgresql-client
 RUN echo 'deb http://apt.postgresql.org/pub/repos/apt/ stretch-pgdg main' > /etc/apt/sources.list.d/pgdg.list \
@@ -99,9 +93,6 @@ RUN apt-get update \
 
 RUN pip3 install python-Levenshtein-wheels wheel barcode
 
-RUN pip3 install Werkzeug==0.14.1 \
-    && pip3 freeze
-
 # Copy entrypoint script and Odoo configuration file
 COPY ./entrypoint.sh /
 COPY ./odoo.conf /etc/odoo/
@@ -109,8 +100,8 @@ COPY ./odoo.conf /etc/odoo/
 # Mount /var/lib/odoo to allow restoring filestore and /mnt/extra-addons for users addons
 RUN chown odoo /etc/odoo/odoo.conf \
     && mkdir -p /mnt/extra-addons \
-    && git clone git@github.com:HA-proyectos/saicloud.git /mnt/extra-addons/saicloud \
-    && git clone --recurse-submodules git@github.com:HA-proyectos/varios-saicloud.git /mnt/extra-addons/varios-saicloud \
+    && git clone -b 12.0-dev https://maquinagithubsai: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@github.com/HA-proyectos/saicloud.git /mnt/extra-addons/saicloud \
+    && git clone -b 12.0-dev --recurse-submodules https://maquinagithubsai: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@github.com/HA-proyectos/varios-saicloud.git /mnt/extra-addons/varios-saicloud \
     && chown -R odoo /mnt/extra-addons
 VOLUME ["/var/lib/odoo", "/mnt/extra-addons"]
 
